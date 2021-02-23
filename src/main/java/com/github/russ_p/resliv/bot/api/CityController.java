@@ -53,6 +53,7 @@ public class CityController {
 				.map(city -> {
 					if (city.getInfo() == null) {
 						city.setInfo(new CityInfo());
+						city.getInfo().setCity(city);
 					}
 					city.getInfo().setText(text);
 					return cityRepository.save(city);
