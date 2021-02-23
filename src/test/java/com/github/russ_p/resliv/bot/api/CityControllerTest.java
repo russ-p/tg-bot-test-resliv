@@ -1,6 +1,8 @@
 package com.github.russ_p.resliv.bot.api;
 
 import static com.github.russ_p.resliv.bot.TestUtils.json;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.russ_p.resliv.bot.entity.City;
+import com.github.russ_p.resliv.bot.entity.CityInfo;
 import com.github.russ_p.resliv.bot.repository.CityRepository;
 
 @WebMvcTest(value = CityController.class)
@@ -138,6 +142,56 @@ public class CityControllerTest {
 	public void testDelete_NotFound() throws Exception {
 		mockMvc.perform(delete("/api/v1/cities/100500"))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testGetInfo_thatReturnsText() throws Exception {
+		City city = new City();
+		city.setId(1L);
+		city.setTitle("Minsk");
+		city.setInfo(new CityInfo());
+		city.getInfo().setText("text");
+
+		when(cityRepository.findById(1L))
+				.thenReturn(Optional.of(city));
+
+		mockMvc.perform(get("/api/v1/cities/1/info"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", equalTo("text")));
+	}
+
+	@Test
+	public void testGetInfo_thatReturnsEmptyStringByDefault() throws Exception {
+		City city = new City();
+		city.setId(1L);
+		city.setTitle("Minsk");
+
+		when(cityRepository.findById(1L))
+				.thenReturn(Optional.of(city));
+
+		mockMvc.perform(get("/api/v1/cities/1/info"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(""));
+	}
+
+	@Test
+	public void testSetInfo() throws Exception {
+		City city = new City();
+		city.setId(1L);
+		city.setTitle("Minsk");
+
+		when(cityRepository.findById(1L))
+				.thenReturn(Optional.of(city));
+		// вернем аргумент вместо null
+		when(cityRepository.save(Mockito.any(City.class)))
+				.thenAnswer(invMock -> invMock.getArgument(0));
+
+		mockMvc.perform(put("/api/v1/cities/1/info")
+				.content("text"))
+				.andExpect(status().isOk());
+
+		assertThat(city.getInfo()).isNotNull();
+		assertThat(city.getInfo().getText()).isEqualTo("text");
 	}
 
 }
