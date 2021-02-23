@@ -44,27 +44,28 @@ databaseChangeLog:
               nullable: false
             name: text
             type: CLOB
+        - column:
+            name: city_id
+            type: BIGINT
         tableName: city_info
 - changeSet:
     id: 4
     author: ruslan
     changes:
-    - addColumn:
-        columns:
-        - column:
-            name: info_id
-            type: bigint
-        tableName: cities
+    - addForeignKeyConstraint:
+        baseColumnNames: city_id
+        baseTableName: city_info
+        constraintName: FK4pqjfaf4cucwb3rwxq6d12cuy
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: cities
+        validate: true
 - changeSet:
     id: 5
     author: ruslan
     changes:
-    - addForeignKeyConstraint:
-        baseColumnNames: info_id
-        baseTableName: cities
-        constraintName: FK48l1l2alkim5lu4e1b2ebrqfq
-        deferrable: false
-        initiallyDeferred: false
-        referencedColumnNames: id
-        referencedTableName: city_info
-        validate: true
+    - sql:
+       sql: insert into cities (`id`, `title`) values (1, 'Москва')
+    - sql:
+       sql: insert into city_info (`id`, `city_id`, `text`) values (1, 1, 'Не забудьте посетить Красную Площадь. Ну а в ЦУМ можно и не заходить)))')
