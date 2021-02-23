@@ -16,3 +16,55 @@ databaseChangeLog:
             name: title
             type: VARCHAR(255)
         tableName: cities
+- changeSet:
+    id: 2
+    author: ruslan
+    changes:
+    - addNotNullConstraint:
+        columnDataType: varchar(255)
+        columnName: title
+        tableName: cities
+        validate: true
+- changeSet:
+    id: 3
+    author: ruslan
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: city_infoPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: text
+            type: CLOB
+        tableName: city_info
+- changeSet:
+    id: 4
+    author: ruslan
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: info_id
+            type: bigint
+        tableName: cities
+- changeSet:
+    id: 5
+    author: ruslan
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: info_id
+        baseTableName: cities
+        constraintName: FK48l1l2alkim5lu4e1b2ebrqfq
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: city_info
+        validate: true
