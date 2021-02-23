@@ -1,0 +1,18 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: ruslan
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: citiesPK
+            name: id
+            type: BIGINT
+        - column:
+            name: title
+            type: VARCHAR(255)
+        tableName: cities
