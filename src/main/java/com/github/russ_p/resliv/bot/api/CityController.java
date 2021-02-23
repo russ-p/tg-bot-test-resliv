@@ -19,8 +19,10 @@ import com.github.russ_p.resliv.bot.entity.City;
 import com.github.russ_p.resliv.bot.entity.CityInfo;
 import com.github.russ_p.resliv.bot.repository.CityRepository;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 
+@Api
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/cities")
