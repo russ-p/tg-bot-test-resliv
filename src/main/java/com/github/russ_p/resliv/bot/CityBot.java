@@ -1,6 +1,10 @@
 package com.github.russ_p.resliv.bot;
 
+import java.util.Locale;
+
 import javax.annotation.PreDestroy;
+
+import org.springframework.context.MessageSource;
 
 import com.github.russ_p.resliv.bot.repository.CityRepository;
 import com.pengrad.telegrambot.TelegramBot;
@@ -19,9 +23,14 @@ public class CityBot extends TelegramBot {
 
 	private final CityRepository cityRepository;
 
-	public CityBot(String botToken, CityRepository cityRepository) {
+	private final String helloMessage;
+	private final String notFoundMessage;
+
+	public CityBot(String botToken, CityRepository cityRepository, MessageSource messageSource) {
 		super(botToken);
 		this.cityRepository = cityRepository;
+		this.helloMessage = messageSource.getMessage("bot.hello", null, Locale.getDefault());
+		this.notFoundMessage = messageSource.getMessage("bot.not.found", null, Locale.getDefault());
 
 		this.setUpdatesListener(updates -> {
 			for (Update update : updates) {
@@ -42,10 +51,10 @@ public class CityBot extends TelegramBot {
 		String text = update.message().text();
 		if (text != null) {
 			if (START.equalsIgnoreCase(text)) {
-				execute(createSendMessage(update.message().chat().id(), "Введите название города"));
+				execute(createSendMessage(update.message().chat().id(), helloMessage));
 				return;
 			}
-			String answer = cityRepository.findCityInfoByCityTitleIgnoreCase(text).orElse("Информация не найдена");
+			String answer = cityRepository.findCityInfoByCityTitleIgnoreCase(text).orElse(notFoundMessage);
 			execute(createSendMessage(update.message().chat().id(), answer));
 		}
 	}

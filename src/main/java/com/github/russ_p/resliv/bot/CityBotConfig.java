@@ -3,6 +3,7 @@ package com.github.russ_p.resliv.bot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,9 +20,12 @@ public class CityBotConfig {
 	@Autowired
 	private CityRepository cityRepository;
 
+	@Autowired
+	private ApplicationContext applicationContext;
+
 	@Bean
 	public TelegramBot createTelegramBot() {
-		return new CityBot(token, cityRepository);
+		return new CityBot(token, cityRepository, applicationContext);
 	}
 
 }
