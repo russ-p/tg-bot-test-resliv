@@ -17,5 +17,27 @@
 # Конфигурация
 
 
+Включить бота в application.properties:
+
+````
+app.telegram.bot.enable=true
+app.telegram.bot.token=<bot:token>
+````
+
+(тестовый бот и его токен указан в сопроводительном письме)
+
 # Запуск
 
+````
+
+mvn spring-boot:run
+
+````
+
+или сразу с параметрами для бота:
+
+````
+mvn spring-boot:run -Dspring-boot.run.arguments="--app.telegram.bot.enable=true --app.telegram.bot.token=<bot:token>"
+````
+
+API doc http://localhost:8080/swagger-ui/
